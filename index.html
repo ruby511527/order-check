@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>配貨查詢</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+  input, button { padding: 10px; width: 100%; margin: 5px 0; }
+  .result { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+</style>
+</head>
+<body>
+<h2>配貨結果查詢</h2>
+<input type="email" id="email" placeholder="請輸入您的 Email">
+<button onclick="checkOrder()">查詢</button>
+<div class="result" id="result"></div>
+
+<script>
+  const apiUrl = "你的 Apps Script 網址"; // 改成你自己的 Web App URL
+
+  function checkOrder() {
+    const email = document.getElementById("email").value;
+    if (!email) {
+      alert("請輸入 Email");
+      return;
+    }
+
+    fetch(`${apiUrl}?email=${encodeURIComponent(email)}`)
+      .then(res => res.json())
+      .then(data => {
+        const resultDiv = document.getElementById("result");
+        if (data.length === 0) {
+          resultDiv.innerHTML = "<p>查無資料</p>";
+        } else {
+          resultDiv.innerHTML = data.map(item => 
+            `<p>訂單編號: ${item.order}<br>商品: ${item.product}<br>狀態: ${item.status}<br>出貨日期: ${item.date}</p>`
+          ).join("<hr>");
+        }
+      })
+      .catch(err => alert("查詢出錯：" + err));
+  }
+</script>
+</body>
+</html>
